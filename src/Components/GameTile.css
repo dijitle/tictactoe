@@ -1,0 +1,12 @@
+.gametile {
+  height: 33.33%;
+  width: 33.33%;
+  display: inline-block;
+  font-size: 20vmin;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #151623;
+  border-style: solid;
+  border-width: 5px;
+  border-color: black;
+}

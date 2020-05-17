@@ -1,9 +1,16 @@
 import React from "react";
+import "./GameTile.css";
 
 function GameTile(props) {
   return (
-    <div className="bg-light text-dark border border-primary border-5 p-1">
-      X
+    <div
+      className="gametile"
+      style={{ backgroundColor: props.GameState.color }}
+      onMouseEnter={props.HandleMouseEnter}
+      onMouseLeave={props.HandleMouseLeave}
+      onClick={props.HandleClick}
+    >
+      {props.GameState.playedBy}
     </div>
   );
 }
