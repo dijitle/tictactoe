@@ -22,53 +22,74 @@ function Game(props) {
   const [winner, setWinner] = useState(null);
 
   const checkWinner = () => {
-    for (let i = 0; i < 7; i += 3) {
-      if (gameState[i].playedBy === null) {
-        continue;
-      }
-      let rowMatches = true;
-      for (let j = i + 1; j < i + 3; j++) {
-        if (gameState[i].playedBy !== gameState[j].playedBy) {
-          rowMatches = false;
-          break;
-        }
-      }
-      if (rowMatches) {
-        let updatedState = [...gameState];
-        for (let j = i; j < i + 3; j++) {
-          updatedState[j].color = winColor;
-          updatedState[j].isWinner = true;
-        }
-        setGameState(updatedState);
-
-        return true;
-      }
+    if (
+      checkRow(0) ||
+      checkRow(3) ||
+      checkRow(6) ||
+      checkCol(0) ||
+      checkCol(1) ||
+      checkCol(2) ||
+      checkDiag(0) ||
+      checkDiag(2)
+    ) {
+      return true;
     }
+    return false;
+  };
 
-    for (let i = 0; i < 3; i++) {
-      if (gameState[i].playedBy === null) {
-        continue;
-      }
-      let colMatches = true;
-      for (let j = i + 3; j < i + 7; j += 3) {
-        if (gameState[i].playedBy !== gameState[j].playedBy) {
-          colMatches = false;
-          break;
-        }
-      }
-      if (colMatches) {
-        let updatedState = [...gameState];
-        for (let j = i; j < i + 7; j += 3) {
-          updatedState[j].color = winColor;
-          updatedState[j].isWinner = true;
-        }
-        setGameState(updatedState);
-
+  const checkRow = (i) => {
+    if (gameState[i].playedBy !== null) {
+      if (
+        gameState[i].playedBy === gameState[i + 1].playedBy &&
+        gameState[i].playedBy === gameState[i + 2].playedBy
+      ) {
+        setWin(i);
+        setWin(i + 1);
+        setWin(i + 2);
         return true;
       }
     }
 
     return false;
+  };
+
+  const checkCol = (i) => {
+    if (gameState[i].playedBy !== null) {
+      if (
+        gameState[i].playedBy === gameState[i + 3].playedBy &&
+        gameState[i].playedBy === gameState[i + 6].playedBy
+      ) {
+        setWin(i);
+        setWin(i + 3);
+        setWin(i + 6);
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const checkDiag = (i) => {
+    if (gameState[i].playedBy !== null) {
+      if (
+        gameState[i].playedBy === gameState[4].playedBy &&
+        gameState[i].playedBy === gameState[i === 0 ? 8 : 6].playedBy
+      ) {
+        setWin(i);
+        setWin(4);
+        setWin(i === 0 ? 8 : 6);
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const setWin = (i) => {
+    let updatedState = [...gameState];
+    updatedState[i].isWinner = true;
+    updatedState[i].color = winColor;
+    setGameState(updatedState);
   };
 
   const takeTurn = (tile) => {
