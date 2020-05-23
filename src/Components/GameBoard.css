@@ -1,0 +1,8 @@
+.game {
+  margin-top: 0.5vh;
+  width: 99vh;
+  height: 98vw;
+  max-height: 99vh;
+  max-width: 99vw;
+  display: inline-block;
+}
