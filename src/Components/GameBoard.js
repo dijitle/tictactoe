@@ -7,39 +7,42 @@ function GameBoard(props) {
   const o = "O";
   const draw = "DRAW";
 
-  const indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-
-  const [gameState, setGameState] = useState(
-    indexes.map(() => {
-      return { playedBy: null, isWinner: false };
-    })
-  );
+  const [gameState, setGameState] = useState([
+    [
+      { playedBy: null, isWinner: false },
+      { playedBy: null, isWinner: false },
+      { playedBy: null, isWinner: false },
+    ],
+    [
+      { playedBy: null, isWinner: false },
+      { playedBy: null, isWinner: false },
+      { playedBy: null, isWinner: false },
+    ],
+    [
+      { playedBy: null, isWinner: false },
+      { playedBy: null, isWinner: false },
+      { playedBy: null, isWinner: false },
+    ],
+  ]);
 
   const checkWinner = () => {
-    if (
-      checkRow(0) ||
-      checkRow(3) ||
-      checkRow(6) ||
-      checkCol(0) ||
-      checkCol(1) ||
-      checkCol(2) ||
-      checkDiag(0) ||
-      checkDiag(2)
-    ) {
-      return true;
+    for (let i = 0; i < 3; i++) {
+      if (checkRow(i) || checkCol(i)) {
+        return true;
+      }
     }
-    return false;
+    return checkDiags();
   };
 
   const checkRow = (i) => {
-    if (gameState[i].playedBy !== null) {
+    if (gameState[i][0].playedBy !== null) {
       if (
-        gameState[i].playedBy === gameState[i + 1].playedBy &&
-        gameState[i].playedBy === gameState[i + 2].playedBy
+        gameState[i][0].playedBy === gameState[i][1].playedBy &&
+        gameState[i][0].playedBy === gameState[i][2].playedBy
       ) {
-        setWin(i);
-        setWin(i + 1);
-        setWin(i + 2);
+        setWin(i, 0);
+        setWin(i, 1);
+        setWin(i, 2);
         return true;
       }
     }
@@ -48,14 +51,14 @@ function GameBoard(props) {
   };
 
   const checkCol = (i) => {
-    if (gameState[i].playedBy !== null) {
+    if (gameState[0][i].playedBy !== null) {
       if (
-        gameState[i].playedBy === gameState[i + 3].playedBy &&
-        gameState[i].playedBy === gameState[i + 6].playedBy
+        gameState[0][i].playedBy === gameState[1][i].playedBy &&
+        gameState[0][i].playedBy === gameState[2][i].playedBy
       ) {
-        setWin(i);
-        setWin(i + 3);
-        setWin(i + 6);
+        setWin(0, i);
+        setWin(1, i);
+        setWin(2, i);
         return true;
       }
     }
@@ -63,15 +66,26 @@ function GameBoard(props) {
     return false;
   };
 
-  const checkDiag = (i) => {
-    if (gameState[i].playedBy !== null) {
+  const checkDiags = () => {
+    if (gameState[0][0].playedBy !== null) {
       if (
-        gameState[i].playedBy === gameState[4].playedBy &&
-        gameState[i].playedBy === gameState[i === 0 ? 8 : 6].playedBy
+        gameState[0][0].playedBy === gameState[1][1].playedBy &&
+        gameState[0][0].playedBy === gameState[2][2].playedBy
       ) {
-        setWin(i);
-        setWin(4);
-        setWin(i === 0 ? 8 : 6);
+        setWin(0, 0);
+        setWin(1, 1);
+        setWin(2, 2);
+        return true;
+      }
+    }
+    if (gameState[0][2].playedBy !== null) {
+      if (
+        gameState[0][2].playedBy === gameState[1][1].playedBy &&
+        gameState[0][2].playedBy === gameState[0][2].playedBy
+      ) {
+        setWin(0, 2);
+        setWin(1, 1);
+        setWin(2, 0);
         return true;
       }
     }
@@ -79,23 +93,25 @@ function GameBoard(props) {
     return false;
   };
 
-  const setWin = (i) => {
+  const setWin = (row, col) => {
     let updatedState = [...gameState];
-    updatedState[i].isWinner = true;
+    updatedState[row][col].isWinner = true;
     setGameState(updatedState);
   };
 
-  const takeTurn = (tile) => {
-    if (gameState[tile].playedBy !== null || props.winner) {
+  const takeTurn = (row, col) => {
+    if (gameState[row][col].playedBy !== null || props.winner) {
       return;
     }
     let updatedState = [...gameState];
-    updatedState[tile].playedBy = props.turn;
+    updatedState[row][col].playedBy = props.turn;
     setGameState(updatedState);
 
     if (checkWinner()) {
       props.setWinner(props.turn);
-    } else if (gameState.find((i) => i.playedBy === null) === undefined) {
+    } else if (
+      gameState.every((row) => row.every((cell) => cell.playedBy !== null))
+    ) {
       props.setWinner(draw);
     } else {
       props.setTurn(props.turn === x ? o : x);
@@ -104,13 +120,16 @@ function GameBoard(props) {
 
   return (
     <div className="game">
-      {indexes.map((i) => (
-        <GameTile
-          key={i}
-          HandleClick={() => takeTurn(i)}
-          GameState={gameState[i]}
-        ></GameTile>
-      ))}
+      {gameState.map((row, i) =>
+        row.map((col, j) => (
+          <GameTile
+            key={i * 10 + j}
+            HandleClick={() => takeTurn(i, j)}
+            isWinner={col.isWinner}
+            playedBy={col.playedBy}
+          ></GameTile>
+        ))
+      )}
     </div>
   );
 }

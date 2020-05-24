@@ -6,15 +6,11 @@ function GameTile(props) {
     <div
       className={
         "gametile " +
-        (props.GameState.isWinner
-          ? "won"
-          : props.GameState.playedBy
-          ? "played"
-          : "unplayed")
+        (props.isWinner ? "won" : props.playedBy ? "played" : "unplayed")
       }
       onClick={props.HandleClick}
     >
-      {props.GameState.playedBy}
+      {props.playedBy}
     </div>
   );
 }
