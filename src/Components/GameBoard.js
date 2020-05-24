@@ -7,15 +7,11 @@ function GameBoard(props) {
   const o = "O";
   const draw = "DRAW";
 
-  const defaultColor = "#151623";
-  const hoverColor = "#234216";
-  const winColor = "#00FF00";
-
   const indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
   const [gameState, setGameState] = useState(
     indexes.map(() => {
-      return { playedBy: null, isWinner: false, color: defaultColor };
+      return { playedBy: null, isWinner: false };
     })
   );
 
@@ -35,7 +31,7 @@ function GameBoard(props) {
     return false;
   };
 
-  const checkRow = i => {
+  const checkRow = (i) => {
     if (gameState[i].playedBy !== null) {
       if (
         gameState[i].playedBy === gameState[i + 1].playedBy &&
@@ -51,7 +47,7 @@ function GameBoard(props) {
     return false;
   };
 
-  const checkCol = i => {
+  const checkCol = (i) => {
     if (gameState[i].playedBy !== null) {
       if (
         gameState[i].playedBy === gameState[i + 3].playedBy &&
@@ -67,7 +63,7 @@ function GameBoard(props) {
     return false;
   };
 
-  const checkDiag = i => {
+  const checkDiag = (i) => {
     if (gameState[i].playedBy !== null) {
       if (
         gameState[i].playedBy === gameState[4].playedBy &&
@@ -83,14 +79,13 @@ function GameBoard(props) {
     return false;
   };
 
-  const setWin = i => {
+  const setWin = (i) => {
     let updatedState = [...gameState];
     updatedState[i].isWinner = true;
-    updatedState[i].color = winColor;
     setGameState(updatedState);
   };
 
-  const takeTurn = tile => {
+  const takeTurn = (tile) => {
     if (gameState[tile].playedBy !== null || props.winner) {
       return;
     }
@@ -100,42 +95,19 @@ function GameBoard(props) {
 
     if (checkWinner()) {
       props.setWinner(props.turn);
-    } else if (gameState.find(i => i.playedBy === null) === undefined) {
+    } else if (gameState.find((i) => i.playedBy === null) === undefined) {
       props.setWinner(draw);
     } else {
       props.setTurn(props.turn === x ? o : x);
     }
   };
 
-  const mouseEnter = tile => {
-    if (props.winner || gameState[tile].playedBy) {
-      return;
-    }
-    let updatedState = [...gameState];
-    updatedState[tile].color = gameState[tile].isWinner ? winColor : hoverColor;
-    setGameState(updatedState);
-    console.log("mouse entered");
-  };
-
-  const mouseLeave = tile => {
-    if (props.winner) {
-      return;
-    }
-    let updatedState = [...gameState];
-    updatedState[tile].color = gameState[tile].isWinner
-      ? winColor
-      : defaultColor;
-    setGameState(updatedState);
-  };
-
   return (
     <div className="game">
-      {indexes.map(i => (
+      {indexes.map((i) => (
         <GameTile
           key={i}
           HandleClick={() => takeTurn(i)}
-          HandleMouseEnter={() => mouseEnter(i)}
-          HandleMouseLeave={() => mouseLeave(i)}
           GameState={gameState[i]}
         ></GameTile>
       ))}

@@ -4,10 +4,14 @@ import "./GameTile.css";
 function GameTile(props) {
   return (
     <div
-      className="gametile"
-      style={{ backgroundColor: props.GameState.color }}
-      onMouseEnter={props.HandleMouseEnter}
-      onMouseLeave={props.HandleMouseLeave}
+      className={
+        "gametile " +
+        (props.GameState.isWinner
+          ? "won"
+          : props.GameState.playedBy
+          ? "played"
+          : "unplayed")
+      }
       onClick={props.HandleClick}
     >
       {props.GameState.playedBy}
