@@ -81,7 +81,7 @@ function GameBoard(props) {
     if (gameState[0][2].playedBy !== null) {
       if (
         gameState[0][2].playedBy === gameState[1][1].playedBy &&
-        gameState[0][2].playedBy === gameState[0][2].playedBy
+        gameState[0][2].playedBy === gameState[2][0].playedBy
       ) {
         setWin(0, 2);
         setWin(1, 1);
