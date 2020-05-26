@@ -127,6 +127,7 @@ function GameBoard(props) {
             HandleClick={() => takeTurn(i, j)}
             isWinner={col.isWinner}
             playedBy={col.playedBy}
+            hasWinner={props.winner}
           ></GameTile>
         ))
       )}
